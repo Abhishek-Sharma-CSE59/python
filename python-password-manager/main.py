@@ -1,24 +1,37 @@
 from cryptography.fernet import Fernet
 
+# def write_key():
+#     key = Fernet.generate_key()
+#     with open("key.key" , "wb") as key_file:
+#         key_file.write(key)
+        
+# write_key()
 
-master_password= input("Enter you master password : ")
+
+def load_key():
+    file = open(r"E:\data files\git\python\python-password-manager\key.key","rb")
+    key = file.read()
+    file.close
+    return key
+key = load_key()
+fer = Fernet(key)
 def view():
     with open(r"python\python-password-manager\passwords.txt" , 'r') as f:
         for line in f.readlines():
             data = line.strip()
             user , passw = data.split("|")
-            print(f"User : {user} | password : {passw}")
+            print(f"---------------------------\nUser : {user} | password : {fer.decrypt(passw.encode()).decode()}\n---------------------------")
 
 
 def add():
     name = input("Enter your name :")
-    pwd = input("Enter your name :")
+    pwd = input("Enter your password :")
     with open(r"python\python-password-manager\passwords.txt" , 'a') as f:
-        f.write(f"{name} | {pwd}\n")     
+        f.write(f"{name} | {fer.encrypt(pwd.encode()).decode()}\n")
 
 def clean():
     with open(r"python\python-password-manager\passwords.txt" , 'w') as f:
-        f.truncate(0)  
+        f.truncate(0)
 
 
 
